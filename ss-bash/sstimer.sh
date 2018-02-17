@@ -31,8 +31,8 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 . $DIR/sslib.sh
 PORT_TIMER_CONFIG=$DIR"/port.timer"
 TLOG=$DIR"/tmp/timer.log"
-
-SLEEP_TIME=1;
+echo "start running at $(date +"%Y-%m-%d %T")" >> $TLOG
+SLEEP_TIME=86400;
 
 TODAY=`date +"%Y-%m-%d"`
 TODAY_S=`date -d "$TODAY" +%s`
