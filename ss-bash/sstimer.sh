@@ -29,22 +29,49 @@ done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 . $DIR/sslib.sh
-echo $DIR"/tmp/timer.log"
+PORT_TIMER_CONFIG=$DIR"/port.timer"
 TLOG=$DIR"/tmp/timer.log"
-ISFIRST=1;
-today=`date +"%Y-%m-%d"`
-st=`date -d "$today" +%s`
-echo $today
-echo $st
+
+SLEEP_TIME=1;
+
+TODAY=`date +"%Y-%m-%d"`
+TODAY_S=`date -d "$TODAY" +%s`
+echo $TODAY
+echo $TODAY_S
+
+
+
+port_kill () {
+    PORT=$1
+    time=$2
+    echo "$(date +"%Y-%m-%d %T") kill port:${PORT} time:$2" >> $TLOG
+}
+
 
 while true; do
     echo "check time"
-    echo $TLOG
-    sleep 1
+    sleep $SLEEP_TIME
     LINE=0
-    cat $TLOG | while read line
+
+    cat $PORT_TIMER_CONFIG | while read line
      do
-         echo "l${COUNT}:${line}"
+         IFS=" "
+         arr=($line)
+         echo ${arr[0]}
+         echo ${arr[1]}
+
+         PORT=${arr[0]}
+         PORT_TIMER=${arr[1]}
+
+         PORT_TIMER_S=`date -d "$PORT_TIMER" +%s`
+
+         echo $PORT_TIMER_S
+         echo "l${LINE}:${line}"
+
+         if [ $PORT_TIMER_S -lt $TODAY_S ];then
+         port_kill $PORT $PORT_TIMER
+         fi
+
          let LINE++
      done
 
